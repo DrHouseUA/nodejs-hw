@@ -17,10 +17,6 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
-    userId: {
-      type: Schema.Types.ObjectId,
-      ref: 'User',
-    },
   },
   {
     timestamps: true,
@@ -29,8 +25,8 @@ const userSchema = new Schema(
 );
 
 userSchema.pre('save', function () {
-  if (!this.name) {
-    this.name = this.email;
+  if (!this.username) {
+    this.username = this.email;
   }
 });
 

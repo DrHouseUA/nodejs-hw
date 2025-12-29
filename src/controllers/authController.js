@@ -31,13 +31,13 @@ export const loginUser = async (req, res) => {
 
   const user = await User.findOne({ email });
   if (!user) {
-    throw createHttpError(400, 'Invalid credentials');
+    throw createHttpError(401, 'Invalid credentials');
   }
 
   const isCorrectPassword = await bcrypt.compare(password, user.password);
 
   if (!isCorrectPassword) {
-    throw createHttpError(400, 'Invalid credentials');
+    throw createHttpError(401, 'Invalid credentials');
   }
 
   await Session.deleteOne({ userId: user._id });
@@ -51,7 +51,6 @@ export const loginUser = async (req, res) => {
 
 export const refreshUserSession = async (req, res) => {
   const { sessionId, refreshToken } = req.cookies;
-  console.log(req.cookies);
   const existSession = await Session.findOne({
     _id: sessionId,
     refreshToken,
@@ -81,8 +80,6 @@ export const refreshUserSession = async (req, res) => {
 
 export const logoutUser = async (req, res) => {
   const { sessionId } = req.cookies;
-  console.log('headers.cookie:', req.headers.cookie);
-  console.log('req.cookies:', req.cookies);
 
   if (sessionId) {
     await Session.deleteOne({ _id: sessionId });
